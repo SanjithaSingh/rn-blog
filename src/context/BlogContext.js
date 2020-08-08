@@ -1,13 +1,23 @@
-import React, { useState } from 'react';
-import { set } from 'react-native-reanimated';
+import React, { useState, useReducer } from 'react';
+
+const blogReducer = (state, action) => {
+    switch (action.type) {
+        case 'addBlogPost':
+            return [...state, { title: `Blog Post #${state.length + 1}` }];
+        default:
+            return state;
+    }
+}
 
 const BlogContext = React.createContext();
 
 export const BlogProvider = ({ children }) => {
-    const [blogPosts, setBlogPosts] = useState([]);
+    const [blogPosts, dispatch] = useReducer(blogReducer, []);
     const addBlogPost = () => {
-        setBlogPosts([...blogPosts, { title: `Blog Post #${blogPosts.length + 1}` }]);
+        dispatch({ type: 'addBlogPost' })
     }
+
+
     return <BlogContext.Provider value={{ data: blogPosts, addBlogPost }}>
         {children}
     </BlogContext.Provider>
